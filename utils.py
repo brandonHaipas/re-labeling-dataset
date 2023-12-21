@@ -164,6 +164,7 @@ pandas_offendES_test = pd.DataFrame(offendEs['test'])
 
 new_offendEs_train = pandas_offendES_train[['comment', 'label']].copy()
 new_offendEs_train = new_offendEs_train.rename(columns={'comment':'text'})
+print(new_offendEs_train.head())
 
 new_offendEs_validation = pandas_offendES_validation[['comment', 'label']].copy()
 new_offendEs_validation = new_offendEs_validation.rename(columns={'comment':'text'})
