@@ -43,22 +43,32 @@ while i < dataset_len:
     
 sexism_dataframe = pd.DataFrame(dataset_dict)
 grooming_data = sexism_dataframe[sexism_dataframe['label']=='GP']
+grooming_data.reset_index(drop=True, inplace=True)
 grooming_data.to_excel("grooming.xlsx")
 grooming_data.to_csv("grooming.csv")
 
 # I have to change the label form 'GP' to 4, since the labels in offendes go from 0 to 3 ..
 
-grooming_data.loc[grooming_data['label']=='GP', 'label'] = 4
+grooming_data.loc[grooming_data.label =='GP', 'label'] = 4
 
 train, test = train_test_split(grooming_data, test_size=0.2)
 train, validation = train_test_split(train, test_size= 0.3)
+
+train = train[['text', 'label']].copy()
+test = test[['text', 'label']].copy()
+validation= validation[['text', 'label']].copy()
+
 train_list = [utils.new_offendEs_train, train]
 validation_list = [utils.new_offendEs_validation, validation]
 test_list = [utils.new_offendEs_test, test]
 
-train_dataframe = pd.concat(train_list, ignore_index=True)
-validation_dataframe = pd.concat(validation_list, ignore_index=True)
-test_dataframe = pd.concat(test_list, ignore_index=True)
+train_dataframe = pd.concat(train_list)
+validation_dataframe = pd.concat(validation_list)
+test_dataframe = pd.concat(test_list)
+
+validation_dataframe= validation_dataframe.reset_index()
+train_dataframe = train_dataframe.reset_index()
+test_dataframe = test_dataframe.reset_index()
 
 hugg_train = Dataset.from_pandas(train_dataframe)
 hugg_validation = Dataset.from_pandas(validation_dataframe)
@@ -77,6 +87,6 @@ new_data_dict.save_to_disk()
 new_data_dict['train'].to_csv("cyberdefender_train.csv")
 new_data_dict['validation'].to_csv("cyberdefender_validation.csv")
 new_data_dict['test'].to_csv("cyberdefender_test.csv")
-new_data_dict['train'].to_csv("cyberdefender_train.json")
-new_data_dict['validation'].to_csv("cyberdefender_validation.json")
-new_data_dict['test'].to_csv("cyberdefender_test.json")
+new_data_dict['train'].to_json("cyberdefender_train.json")
+new_data_dict['validation'].to_json("cyberdefender_validation.json")
+new_data_dict['test'].to_json("cyberdefender_test.json")
